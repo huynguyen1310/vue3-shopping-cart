@@ -4,6 +4,9 @@
       <RouterLink class="btn btn-ghost normal-case text-xl" to="/">daisyUI</RouterLink>
     </div>
     <div class="flex-none">
+      <form @keypress.enter.prevent="searchHandler" class="form-control">
+        <input type="text" placeholder="Search" class="input input-bordered w-24 md:w-auto" v-model="search" />
+      </form>
       <RouterLink to="/cart">
         <div>
           <label class="btn btn-ghost btn-circle">
@@ -43,12 +46,20 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import { useCartStore } from '../stores/cart.js'
+import { useProductStore } from '../stores/products';
 import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
+const search = ref('')
+
 const store = useCartStore()
-// const cartLength = computed(() => store.cartCount)
+const productStore = useProductStore()
+
 const { cartCount } = storeToRefs(store)
+
+function searchHandler() {
+  productStore.search(search.value)
+}
 
 onMounted(() => {
   store.fetchCart()
